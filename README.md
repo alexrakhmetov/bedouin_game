@@ -1,5 +1,5 @@
 Digitalisation of a traditional Arabic game akin to Three Men's Morris.
-Developed in collaboration with my friend Cumar.
+Developed in collaboration with my friend @OmarcumarHasan.
 
 Rules:
 The game has two players. They start out on the top and bottom rows. The 
