@@ -25,14 +25,35 @@ int main()
 		state[3], state[4], state[5], state[6], state[7],
 		state[8], (turn + 1));
 		mov_pc(state, &turn);
+
 		// Win conditions
+
+		// All win conditions involving B2
 		if ((state[4] != 0) && 
 		(((state[3] == state[4]) && (state[4] == state[5])) || 
-		((state [0] == state[4]) && (state[4] == state[8]))) || 
-		((state[2] == state[4]) && (state[4] == state[6]))) {
-			printf("Player %d wins!\n", turn);
-			break;
-		}
+		((state [0] == state[4]) && (state[4] == state[8])) || 
+		((state[2] == state[4]) && (state[4] == state[6]))) || 
+		((state[1] == state[4]) && (state[4] == state[7])))
+			goto WINNER;
+
+		// Side Verticals
+		if ((state[3] != 0) && 
+		((state[0] == state[3]) && (state[3] == state[6])))
+			goto WINNER;
+		if ((state[5] != 0) && 
+		((state[2] == state[5]) && (state[5] == state[8])))
+			goto WINNER;
+
+		// Enemy Homes
+		if ((state[0] == 2) && 
+		((state[0] == state[1]) && (state[1] == state[2])))
+			goto WINNER;
+		if ((state[6] == 1) && 
+		((state[6] == state[7]) && (state[7] == state[8])))
+			goto WINNER;
 	}
+
+WINNER:
+	printf("Player %d wins!\n", ((turn != 1) + 1));
 	return 0;
 }

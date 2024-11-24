@@ -5,13 +5,22 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-// Takes input in "Chess Notation" and turns into an array index.
-// Returns -1 for invalid inputs.
+/*
+ * Takes input in "Chess Notation" and turns into an array index.
+ * Returns -1 for invalid inputs. Kills program if we get an EOF as 
+ * an input, because otherwise the program enters an infinite loop.
+ */
 int8_t pinp(int8_t input)
 {
 	int8_t column = -1;
 	int8_t row = -1;
 	input = fgetc(stdin);
+	if (input == EOF) {
+		fputs("Program terminated. Thank you for playing!\n",
+		stderr);
+		exit(EXIT_FAILURE);
+	}
+
 	switch (input) {
 		case 'A':
 			column = 0;
@@ -36,8 +45,7 @@ int8_t pinp(int8_t input)
 			break;
 	}
 
-	// Clear out input buffer
-	fgetc(stdin);
+	if (fgetc(stdin) != '\n') input = -1;
 	if ((row == -1) || (column == -1)) input = -1;
 	else input = ((3 * row) + column);
 	return input;
@@ -51,12 +59,7 @@ void mov_pc(char* state, unsigned char* turn)
 
 	puts("Piece to move:");
 	pc2mov = pinp(input);
-	if (pc2mov == -1) {
-		fputs("Invalid input. "
-		"Inputs must be in chess-style notation (i.e. A1)\n",
-		stderr);
-		return;
-	}
+	if (pc2mov == -1) goto INV_INPUT;
 	if (state[pc2mov] != (*turn + 1)) {
 		fputs("This space is not occupied by the player!\n", 
 		stderr);
@@ -65,12 +68,7 @@ void mov_pc(char* state, unsigned char* turn)
 
 	puts("Space to move to:");
 	spc2mov = pinp(input);
-	if (spc2mov == -1) {
-		fputs("Invalid input. "
-		"Inputs must be in chess-style notation (i.e. A1)\n",
-		stderr);
-		return;
-	}
+	if (spc2mov == -1) goto INV_INPUT;
 	if (state[spc2mov] != 0) {
 		fputs("This space is occupied!\n", stderr);
 		return;
@@ -90,6 +88,11 @@ void mov_pc(char* state, unsigned char* turn)
 	state[pc2mov] = 0;
 	state[spc2mov] = (*turn + 1);
 	*turn ^= 1;
+	return;
+INV_INPUT:
+	fputs("Invalid input. "
+	"Inputs must be in chess-style notation (i.e. A1)\n",
+	stderr);
 	return;
 }
 #endif // PIO_H
